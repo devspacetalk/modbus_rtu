@@ -25,27 +25,11 @@ import { Request } from 'express';
 export class ModbusController {
   constructor(private readonly modbusService: ModbusService) {}
 
-  @Post('/connect')
-  @ApiOperation({
-    summary: '컨트롤러 connect',
-  })
-  async connect(@Req() req: Request): Promise<any> {
-    return await this.modbusService.connect();
-  }
-
-  @Post('/disconnect')
-  @ApiOperation({
-    summary: '컨트롤러 disconnect',
-  })
-  async disconnect(@Req() req: Request): Promise<any> {
-    return await this.modbusService.disconnect();
-  }
-
   @Post('/device/modbus/:uuid')
   @ApiParam({
     name: 'uuid',
     required: true,
-    description: 'device uuid (출입문, pc, light, Airconditioner, projector',
+    description: 'device uuid (출입문, pc, light, Airconditioner, projector )',
     enum: [
       '679bb01c-7462-11ee-b962-0242ac120002',
       '679bb2a6-7462-11ee-b962-0242ac120002',
@@ -66,7 +50,7 @@ export class ModbusController {
   @ApiParam({
     name: 'uuid',
     required: true,
-    description: 'device uuid (출입문, pc, light, Airconditioner, projector',
+    description: 'device uuid (출입문, pc, light, Airconditioner, projector )',
     enum: [
       '679bb01c-7462-11ee-b962-0242ac120002',
       '679bb2a6-7462-11ee-b962-0242ac120002',
@@ -107,16 +91,39 @@ export class ModbusController {
     return await this.modbusService.controlDevice(uuid, execute);
   }
 
-  @Put('/device/airconditioner/:uuid')
+  @Put('/device/airconditioner/:uuid/:acMode/:temperature')
+  @ApiParam({
+    name: 'uuid',
+    required: true,
+    description: 'device uuid hw(Airconditioner)',
+    enum: ['679bb62a-7462-11ee-b962-0242ac120002'],
+  })
+  @ApiParam({
+    name: 'acMode',
+    required: true,
+    description: '1:cool, 2:dry, 3:fan, 4:heat',
+    enum: ['1', '2', '3', '4'],
+  })
+  @ApiParam({
+    name: 'temperature',
+    required: true,
+    description: '18 ~ 28',
+    enum: ['18', '20', '22', '24', '26', '28'],
+  })
   @ApiOperation({
     summary: '에어컨 모드/ 온도 제어',
     description: '에어컨 모드/ 온도 제어',
   })
   async controlAirconditioner(
     @Param('uuid') uuid: string,
-    @Body() data: DeviceAirconditionerDto,
+    @Param('acMode') acMode: string,
+    @Param('temperature') temperature: string,
   ): Promise<any> {
-    return await this.modbusService.setAirconditioner(uuid, data);
+    const config = {
+      acMode: acMode,
+      temperature: temperature,
+    };
+    return await this.modbusService.setAirconditioner(uuid, config);
   }
 
   @Get('/device/modbus/read/all')

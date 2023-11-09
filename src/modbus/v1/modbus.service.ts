@@ -73,7 +73,6 @@ export class ModbusService {
   private client: ModbusRTU;
   public COM_PORT = 'COM1'; //process.env.COM_PORT;
 
-  Deleay = 1000;
   constructor() {
     //장비 연결 안했을시 주석처리 필요
     //this.connect();
@@ -121,7 +120,7 @@ export class ModbusService {
 
     const result = await this.createModbusDevice(device, hwCount);
 
-    return result;
+    return device.name + '디바이스 등록';
   }
   async controlDevice(uuid, execute) {
     //전달받은 id 로 등록된 device 조회후 제어
@@ -154,6 +153,8 @@ export class ModbusService {
     }
 
     await this.controlModbus(device, isOn);
+
+    return device.name + '디바이스 명령 : ' + execute + '실행';
   }
 
   async controlModbus(device, command) {
@@ -170,6 +171,8 @@ export class ModbusService {
     const hwCount = await this.readDummyCount();
 
     await this.setAirconditionerModbus(device.slaveId, data, hwCount);
+
+    return device.name + 'config 변경';
   }
 
   async readDevicesModbus() {
