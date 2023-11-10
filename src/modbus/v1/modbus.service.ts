@@ -286,6 +286,8 @@ export class ModbusService {
       }
     }
 
+    if (control_slave == -1) return '일치하는 device 가 없습니다.';
+
     console.log(
       '제어 섹션  = ',
       control_slave,

@@ -80,6 +80,12 @@ export class ModbusController {
       '679bb742-7462-11ee-b962-0242ac120002',
     ],
   })
+  @ApiParam({
+    name: 'execute',
+    required: true,
+    description: 'device 실행',
+    enum: ['true', 'false'],
+  })
   @ApiOperation({
     summary: 'store device 제어',
     description: 'store device 제어',
