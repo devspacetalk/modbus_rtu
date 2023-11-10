@@ -373,7 +373,7 @@ export class ModbusService {
     try {
       await this.client.writeRegister(address, value);
       console.log(
-        `Successfully wrote coil at address ${address} with value ${value} `,
+        `Successfully writeRegister at address ${address} with value ${value} `,
       );
     } catch (error) {
       console.error(`Error writing coil: ${error}`);
@@ -383,7 +383,7 @@ export class ModbusService {
     try {
       await this.client.writeRegisters(address, values);
       console.log(
-        `Successfully wrote coil at address ${address} with value ${values} `,
+        `Successfully writeRegisters at address ${address} with value ${values} `,
       );
     } catch (error) {
       console.error(`Error writing coil: ${error}`);
@@ -428,7 +428,10 @@ export class ModbusService {
     //최종 values 값 확인 리턴
     console.log('makeValues = ', values);
 
-    return values;
+    //문자열을 숫자로 저장
+    const result = this.stringArrayToHexNumbers(values);
+    console.log('result = ', result);
+    return result;
   }
 
   splitHexToBytes(hexString) {
@@ -451,6 +454,10 @@ export class ModbusService {
     // 16진수 문자열을 2바이트(4글자)로 만듭니다.
     const paddedHexString = hexString.padStart(4, '0');
 
-    return paddedHexString;
+    return paddedHexString.toLowerCase();
+  }
+
+  stringArrayToHexNumbers(stringArray) {
+    return stringArray.map((hexString) => parseInt(hexString, 16));
   }
 }
