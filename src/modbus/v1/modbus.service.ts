@@ -298,7 +298,7 @@ export class ModbusService {
     );
 
     if (command == true) command = 1;
-    else if (command == false) command = 0;
+    else if (command == false) command = 2;
 
     await this.writeRegister(control_slave + 15, command);
   }
@@ -325,6 +325,8 @@ export class ModbusService {
       }
     }
 
+    if (control_slave == -1) return '일치하는 device 가 없습니다.';
+
     console.log(
       '제어 섹션  = ',
       control_slave,
@@ -343,8 +345,12 @@ export class ModbusService {
     values.push(this.intToHex2Bytes(temperature));
 
     console.log('에어컨 하드웨어 전송 values = ', values);
+
+    //문자열을 숫자로 저장
+    const result = this.stringArrayToHexNumbers(values);
+    console.log('result = ', result);
     //에어컨 모드와, 온도를 한번에 전송해준다
-    await this.writeRegisters(control_slave + 16, values);
+    await this.writeRegisters(control_slave + 16, result);
     //그이후 커멘드를 3 전송해준다
     await this.writeRegister(control_slave + 15, HWCommand.Config);
   }
